@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:mini_expense_tracker/utils/currency_input_formatter.dart';
 
@@ -25,7 +23,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
        */
       () {
         final String text = _currencyFieldController.text;
-        log("controller text: $text");
         _currencyFieldController.value =
             _currencyFieldController.value.copyWith(
           text: text,
@@ -74,12 +71,16 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
               minLines: 4,
               maxLines: 4,
             ),
+            SizedBox.fromSize(
+              size: const Size.fromHeight(16),
+            ),
             TextFormField(
               controller: _currencyFieldController,
               decoration: const InputDecoration(
                 labelText: 'Amount',
                 border: OutlineInputBorder(),
               ),
+              textAlign: TextAlign.right,
               validator: (String? value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter some text';
@@ -90,7 +91,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                 CurrencyInputFormatter(),
               ],
               keyboardType: TextInputType.number,
-            ),
+            ), // TODO: add transaction date time
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(
