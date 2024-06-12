@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mini_expense_tracker/utils/currency_input_formatter.dart';
+import 'package:mini_expense_tracker/utils/util.dart';
 
 class AddExpenseScreen extends StatefulWidget {
   const AddExpenseScreen({super.key});
@@ -11,6 +12,8 @@ class AddExpenseScreen extends StatefulWidget {
 class _AddExpenseScreenState extends State<AddExpenseScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _currencyFieldController =
+      TextEditingController();
+  final TextEditingController _dateTimeFieldController =
       TextEditingController();
 
   @override
@@ -32,6 +35,20 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
         );
       },
     );
+    _dateTimeFieldController.text = Util.formatDateTime(DateTime.now());
+  }
+
+  void _onTap({required BuildContext context}) {
+    showDatePicker(
+            context: context,
+            firstDate: DateTime(2000),
+            lastDate: DateTime(DateTime.now().year + 1))
+        .then((selectedDate) {
+      if (selectedDate == null) {
+        return;
+      }
+      _dateTimeFieldController.text = Util.formatDateTime(selectedDate);
+    });
   }
 
   @override
@@ -91,7 +108,25 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                 CurrencyInputFormatter(),
               ],
               keyboardType: TextInputType.number,
-            ), // TODO: add transaction date time
+            ),
+            SizedBox.fromSize(
+              size: const Size.fromHeight(16),
+            ),
+            TextFormField(
+              controller: _dateTimeFieldController,
+              decoration: const InputDecoration(
+                labelText: 'Transaction Date',
+                border: OutlineInputBorder(),
+              ),
+              validator: (String? value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
+              readOnly: true,
+              onTap: () => _onTap(context: context),
+            ), // TODO: add transaction time
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(
