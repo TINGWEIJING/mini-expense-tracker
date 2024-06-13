@@ -13,8 +13,8 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _currencyFieldController =
       TextEditingController();
-  final TextEditingController _dateTimeFieldController =
-      TextEditingController();
+  final TextEditingController _dateFieldController = TextEditingController();
+  final TextEditingController _timeFieldController = TextEditingController();
 
   @override
   void initState() {
@@ -35,10 +35,11 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
         );
       },
     );
-    _dateTimeFieldController.text = Util.formatDateTime(DateTime.now());
+    _dateFieldController.text = Util.formatDate(DateTime.now());
+    _timeFieldController.text = Util.formatTime(TimeOfDay.now());
   }
 
-  void _onTap({required BuildContext context}) {
+  void _onDateFieldTap({required BuildContext context}) {
     showDatePicker(
             context: context,
             firstDate: DateTime(2000),
@@ -47,7 +48,20 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       if (selectedDate == null) {
         return;
       }
-      _dateTimeFieldController.text = Util.formatDateTime(selectedDate);
+      _dateFieldController.text = Util.formatDate(selectedDate);
+    });
+  }
+
+  void _onTimeFieldTap({required BuildContext context}) {
+    showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      initialEntryMode: TimePickerEntryMode.inputOnly,
+    ).then((selectedTime) {
+      if (selectedTime == null) {
+        return;
+      }
+      _timeFieldController.text = Util.formatTime(selectedTime);
     });
   }
 
@@ -113,7 +127,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
               size: const Size.fromHeight(16),
             ),
             TextFormField(
-              controller: _dateTimeFieldController,
+              controller: _dateFieldController,
               decoration: const InputDecoration(
                 labelText: 'Transaction Date',
                 border: OutlineInputBorder(),
@@ -125,8 +139,27 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                 return null;
               },
               readOnly: true,
-              onTap: () => _onTap(context: context),
-            ), // TODO: add transaction time
+              onTap: () => _onDateFieldTap(context: context),
+            ),
+            SizedBox.fromSize(
+              size: const Size.fromHeight(16),
+            ),
+            TextFormField(
+              controller: _timeFieldController,
+              decoration: const InputDecoration(
+                labelText: 'Transaction Time',
+                border: OutlineInputBorder(),
+              ),
+              validator: (String? value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
+              readOnly: true,
+              onTap: () => _onTimeFieldTap(context: context),
+            ),
+            // TODO (WJ): add source selection
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(
