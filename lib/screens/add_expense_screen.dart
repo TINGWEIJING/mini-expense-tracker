@@ -159,7 +159,16 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
               readOnly: true,
               onTap: () => _onTimeFieldTap(context: context),
             ),
-            // TODO (WJ): add source selection
+            SizedBox.fromSize(
+              size: const Size.fromHeight(16),
+            ),
+            DropdownMenu(
+              // TODO (WJ): wrap with form validation
+              dropdownMenuEntries: ["A", "B"].map((value) {
+                return DropdownMenuEntry(value: value, label: value);
+              }).toList(),
+            ),
+            // TODO (WJ): add destination selection
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(
