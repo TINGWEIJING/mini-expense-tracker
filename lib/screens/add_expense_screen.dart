@@ -167,8 +167,18 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
               dropdownMenuEntries: ["A", "B"].map((value) {
                 return DropdownMenuEntry(value: value, label: value);
               }).toList(),
+              hintText: "source",
             ),
-            // TODO (WJ): add destination selection
+            SizedBox.fromSize(
+              size: const Size.fromHeight(16),
+            ),
+            DropdownMenu(
+              // TODO (WJ): wrap with form validation
+              dropdownMenuEntries: ["A", "B"].map((value) {
+                return DropdownMenuEntry(value: value, label: value);
+              }).toList(),
+              hintText: "destination",
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(
