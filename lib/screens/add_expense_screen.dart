@@ -16,6 +16,10 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   final TextEditingController _dateFieldController = TextEditingController();
   final TextEditingController _timeFieldController = TextEditingController();
 
+  final SizedBox gapBetweenField = SizedBox.fromSize(
+    size: const Size.fromHeight(16),
+  );
+
   @override
   void initState() {
     super.initState();
@@ -67,132 +71,140 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(8, 48, 8, 8),
-        child: Column(
-          children: [
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Name',
-                border: OutlineInputBorder(),
+    // TODO (WJ): add close keyboard view auto when change focus
+    return SingleChildScrollView(
+      // Clamping will auto scroll to make text field visible,
+      // its parent NeverScrollable will not allow the user to scroll.
+      physics:
+          const ClampingScrollPhysics(parent: NeverScrollableScrollPhysics()),
+      child: Form(
+        key: _formKey,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(8, 48, 8, 8),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    child: DropdownMenu(
+                      // TODO (WJ): wrap with form validation
+                      dropdownMenuEntries: ["A", "B"].map((value) {
+                        return DropdownMenuEntry(value: value, label: value);
+                      }).toList(),
+                      hintText: "From",
+                      expandedInsets: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                    ),
+                  ),
+                  Expanded(
+                    child: DropdownMenu(
+                      // TODO (WJ): wrap with form validation
+                      dropdownMenuEntries: ["A", "B"].map((value) {
+                        return DropdownMenuEntry(value: value, label: value);
+                      }).toList(),
+                      hintText: "To",
+                      expandedInsets: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                    ),
+                  ),
+                ],
               ),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-            ),
-            SizedBox.fromSize(
-              size: const Size.fromHeight(16),
-            ),
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Notes',
-                border: OutlineInputBorder(),
-              ),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-              minLines: 4,
-              maxLines: 4,
-            ),
-            SizedBox.fromSize(
-              size: const Size.fromHeight(16),
-            ),
-            TextFormField(
-              controller: _currencyFieldController,
-              decoration: const InputDecoration(
-                labelText: 'Amount',
-                border: OutlineInputBorder(),
-              ),
-              textAlign: TextAlign.right,
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-              inputFormatters: [
-                CurrencyInputFormatter(),
-              ],
-              keyboardType: TextInputType.number,
-            ),
-            SizedBox.fromSize(
-              size: const Size.fromHeight(16),
-            ),
-            TextFormField(
-              controller: _dateFieldController,
-              decoration: const InputDecoration(
-                labelText: 'Transaction Date',
-                border: OutlineInputBorder(),
-              ),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-              readOnly: true,
-              onTap: () => _onDateFieldTap(context: context),
-            ),
-            SizedBox.fromSize(
-              size: const Size.fromHeight(16),
-            ),
-            TextFormField(
-              controller: _timeFieldController,
-              decoration: const InputDecoration(
-                labelText: 'Transaction Time',
-                border: OutlineInputBorder(),
-              ),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-              readOnly: true,
-              onTap: () => _onTimeFieldTap(context: context),
-            ),
-            SizedBox.fromSize(
-              size: const Size.fromHeight(16),
-            ),
-            DropdownMenu(
-              // TODO (WJ): wrap with form validation
-              dropdownMenuEntries: ["A", "B"].map((value) {
-                return DropdownMenuEntry(value: value, label: value);
-              }).toList(),
-              hintText: "source",
-            ),
-            SizedBox.fromSize(
-              size: const Size.fromHeight(16),
-            ),
-            DropdownMenu(
-              // TODO (WJ): wrap with form validation
-              dropdownMenuEntries: ["A", "B"].map((value) {
-                return DropdownMenuEntry(value: value, label: value);
-              }).toList(),
-              hintText: "destination",
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  // Validate will return true if the form is valid, or false if
-                  // the form is invalid.
-                  if (_formKey.currentState!.validate()) {
-                    // Process data.
+              gapBetweenField,
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Name',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter some text';
                   }
+                  return null;
                 },
-                child: const Text('Submit'),
               ),
-            ),
-          ],
+              gapBetweenField,
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Notes',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter some text';
+                  }
+                  return null;
+                },
+                minLines: 4,
+                maxLines: 4,
+              ),
+              gapBetweenField,
+              TextFormField(
+                controller: _currencyFieldController,
+                decoration: const InputDecoration(
+                  labelText: 'Amount',
+                  border: OutlineInputBorder(),
+                ),
+                textAlign: TextAlign.right,
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter some text';
+                  }
+                  return null;
+                },
+                inputFormatters: [
+                  CurrencyInputFormatter(),
+                ],
+                keyboardType: TextInputType.number,
+              ),
+              gapBetweenField,
+              TextFormField(
+                controller: _dateFieldController,
+                decoration: const InputDecoration(
+                  labelText: 'Transaction Date',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter some text';
+                  }
+                  return null;
+                },
+                readOnly: true,
+                onTap: () => _onDateFieldTap(context: context),
+              ),
+              gapBetweenField,
+              TextFormField(
+                controller: _timeFieldController,
+                decoration: const InputDecoration(
+                  labelText: 'Transaction Time',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter some text';
+                  }
+                  return null;
+                },
+                readOnly: true,
+                onTap: () => _onTimeFieldTap(context: context),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Validate will return true if the form is valid, or false if
+                    // the form is invalid.
+                    if (_formKey.currentState!.validate()) {
+                      // Process data.
+                    }
+                  },
+                  child: const Text('Submit'),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
